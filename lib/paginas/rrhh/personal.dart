@@ -142,7 +142,7 @@ class _PersonalState extends State<Personal> {
       floatingActionButton: FloatingActionButton.large(
         onPressed: () {
           setState(() {
-            Navigator.of(context).pushNamed("/rrhh/personalcrear");
+            Navigator.of(context).pushNamed("/rrhh/PersonalCrear");
           });
         },
         child: const Icon(Icons.add),
