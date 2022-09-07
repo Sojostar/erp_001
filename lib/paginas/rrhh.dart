@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:erp/paginas/rrhh/personal.dart';
+import 'package:erp/paginas/rrhh/prueba.dart';
+import 'package:erp/paginas/rrhh/prueba_2.dart';
 //import 'package:proyecto_002/paginas/rrhh/personal.dart';
 
 class rrhh extends StatefulWidget {
@@ -68,12 +70,8 @@ class _rrhhState extends State<rrhh> {
             Center(
               child: Text("It's rainy here"),
             ),
-            Center(
-              child: Text("It's sunny here"),
-            ),
-            Center(
-              child: Text("It's sunny here"),
-            ),
+            new Prueba2(),
+            new Prueba(),
           ],
         ),
       ),

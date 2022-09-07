@@ -10,6 +10,7 @@ var results_nivel_instruccion;
 var results_discapacidad;
 var result_operadora;
 var results_parentesco;
+var results_Estados;
 
 Future fn_query_pais() async {
   // Open a connection (testdb should already exist)
@@ -26,12 +27,14 @@ Future fn_query_pais() async {
   listPaisNacionalidad.clear();
   listPaisNacimiento.clear();
   listUbicacionPais.clear();
+  listPaisResidencia.clear();
   for (var row in results) {
     print('nombre_pais: ${row[1]}');
     print('id_pais: ${row[0]}');
     listPaisNacionalidad.add({'value': row[0], 'nombre': row[1]});
     listPaisNacimiento.add({'value': row[0], 'nombre': row[1]});
     listUbicacionPais.add({'value': row[0], 'nombre': row[1]});
+    listPaisResidencia.add({'value': row[0], 'nombre': row[1]});
   }
 
   await conn.close();
@@ -208,6 +211,53 @@ Future fn_query_parentesco() async {
   await conn.close();
 }
 
+//Ciudad
+Future fn_query_ciudad(int valor) async {
+  // Open a connection (testdb should already exist)
+  final conn = await MySqlConnection.connect(ConnectionSettings(
+      host: 'localhost',
+      port: 3306,
+      user: 'avila',
+      db: 'avila',
+      password: 'avila'));
+
+  results_sexo = await conn
+      .query('select gen_sexo_id,gen_sexo from gen_ciudades where order by 1');
+
+  listSexo.clear();
+  for (var row in results_sexo) {
+    print('gen_sexo_id: ${row[0]}');
+    print('gen_sexo: ${row[1]}');
+    listSexo.add({'value': row[0], 'nombre': row[1]});
+  }
+
+  await conn.close();
+}
+
+//Estado
+Future fn_query_estado(valor) async {
+  // Open a connection (testdb should already exist)
+  final conn = await MySqlConnection.connect(ConnectionSettings(
+      host: 'localhost',
+      port: 3306,
+      user: 'avila',
+      db: 'avila',
+      password: 'avila'));
+
+  results_Estados = await conn.query(
+      'select id_estado,estado from gen_estados where id_pais=? order by 1',
+      [valor]);
+
+  listEstados.clear();
+  for (var row in results_Estados) {
+    print('id_estado: ${row[0]}');
+    print('estado: ${row[1]}');
+    listEstados.add({'value': row[0], 'nombre': row[1]});
+  }
+
+  await conn.close();
+}
+
 class PersonalCrear extends StatefulWidget {
   ///const PersonalCrear({super.key});
 
@@ -231,7 +281,9 @@ class _PersonalCrearState extends State<PersonalCrear> {
             return null;
           },
           decoration: const InputDecoration(
-              hintText: 'Introduzca Primer Nombre', labelText: 'Primer Nombre'),
+              //border: OutlineInputBorder(),
+              hintText: 'Introduzca Primer Nombre',
+              labelText: 'Primer Nombre'),
         )
       ],
     ),
@@ -241,6 +293,7 @@ class _PersonalCrearState extends State<PersonalCrear> {
       children: <Widget>[
         TextFormField(
           decoration: const InputDecoration(
+              //border: OutlineInputBorder(),
               hintText: 'Introduzca Segundo Nombre',
               labelText: 'Segundo Nombre'),
         )
@@ -252,6 +305,7 @@ class _PersonalCrearState extends State<PersonalCrear> {
       children: <Widget>[
         TextFormField(
           decoration: const InputDecoration(
+              //border: OutlineInputBorder(),
               hintText: 'Introduzca Primer Apellido',
               labelText: 'Primer Apellido'),
         )
@@ -263,6 +317,7 @@ class _PersonalCrearState extends State<PersonalCrear> {
       children: <Widget>[
         TextFormField(
           decoration: const InputDecoration(
+              //border: OutlineInputBorder(),
               hintText: 'Introduzca Primer Apellido',
               labelText: 'Segundo Apellido'),
         )
@@ -290,6 +345,22 @@ class _PersonalCrearState extends State<PersonalCrear> {
     child: Column(
       children: <Widget>[
         DropdownUbicacionPais(),
+      ],
+    ),
+  );
+
+  final pais_residencia = Container(
+    child: Column(
+      children: <Widget>[
+        DropdownPaisUbicacion(),
+      ],
+    ),
+  );
+
+  final estados = Container(
+    child: Column(
+      children: <Widget>[
+        DropdownEstadoResidencia(),
       ],
     ),
   );
@@ -492,6 +563,7 @@ class _PersonalCrearState extends State<PersonalCrear> {
                       primer_nombre,
                       identificacion,
                       sexo,
+                      pais_residencia,
                     ],
                   ),
                 ),
@@ -504,6 +576,7 @@ class _PersonalCrearState extends State<PersonalCrear> {
                       segundo_nombre,
                       rif,
                       pais_nacimiento,
+                      estados,
                     ],
                   ),
                 ),
@@ -516,6 +589,7 @@ class _PersonalCrearState extends State<PersonalCrear> {
                       primer_apellido,
                       estatura,
                       pais_nacionalidad,
+                      pais_nacimiento,
                     ],
                   ),
                 ),
@@ -528,6 +602,7 @@ class _PersonalCrearState extends State<PersonalCrear> {
                       segundo_apellido,
                       fecha_nacimiento,
                       dominancia,
+                      pais_nacimiento,
                     ],
                   ),
                 ),
@@ -545,6 +620,7 @@ String nombre = ' ';
 
 List listPaisNacimiento = [];
 List listPaisNacionalidad = [];
+List listPaisResidencia = [];
 List listUbicacionPais = [];
 List listUbicacionCiudad = [];
 List listUbicacionEstado = [];
@@ -561,6 +637,7 @@ List listTelefonoReferenciaAOper = [];
 List listTelefonoReferenciaBOper = [];
 List listTelefonoReferenciaEmergenciaOper = [];
 List listEmergenciaParentesco = [];
+List listEstados = [];
 
 // Pais de Nacimiento
 class DropdownPaisNacimiento extends StatefulWidget {
@@ -632,6 +709,15 @@ class _DropdownPaisUbicacionState extends State<DropdownPaisUbicacion> {
     super.initState();
   }
 
+  @override
+  void didUpdateWidget(DropdownPaisUbicacion oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (DropdownPaisUbicacion != oldWidget) {
+      setState(() {});
+      // TODO: start a transition between the previous and new value
+    }
+  }
+
   _getLista() async {
     await fn_query_pais();
     setState(() {});
@@ -639,6 +725,7 @@ class _DropdownPaisUbicacionState extends State<DropdownPaisUbicacion> {
 
   @override
   Widget build(BuildContext context) {
+    DropdownEstadoResidencia juan = DropdownEstadoResidencia();
     return DropdownButtonFormField(
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.location_pin),
@@ -650,9 +737,10 @@ class _DropdownPaisUbicacionState extends State<DropdownPaisUbicacion> {
       isExpanded: true,
       // value: dropdownValue,
       icon: const Icon(Icons.arrow_downward),
-      onChanged: (Map) {
+      onChanged: (map) {
         // This is called when the user selects an item.
         setState(() {
+          fn_query_estado(map);
           // dropdownValue = 'value';
         });
       },
@@ -705,13 +793,73 @@ class _DropdownPaisNacionalidadState extends State<DropdownPaisNacionalidad> {
       isExpanded: true,
       // value: dropdownValue,
       icon: const Icon(Icons.arrow_downward),
-      onChanged: (Map) {
+      onChanged: (map) {
         // This is called when the user selects an item.
         setState(() {
           // dropdownValue = 'value';
         });
       },
       items: listPaisNacionalidad.map((map) {
+        return DropdownMenuItem(
+          child: Text(
+            map['nombre'],
+          ),
+          value: map['value'],
+        );
+      }).toList(),
+    );
+  }
+}
+
+//Estado
+
+class DropdownEstadoResidencia extends StatefulWidget {
+  const DropdownEstadoResidencia({super.key});
+
+  @override
+  State<DropdownEstadoResidencia> createState() =>
+      _DropdownEstadoResidenciaState();
+}
+
+class _DropdownEstadoResidenciaState extends State<DropdownEstadoResidencia> {
+  // String dropdownValue = [{999,'jose'}];
+  recarga_estado() {
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    _getLista();
+    super.initState();
+  }
+
+  _getLista() async {
+    await fn_query_estado(0);
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButtonFormField(
+      decoration: InputDecoration(
+        prefixIcon: Icon(Icons.location_pin),
+        hintText: 'Estado de Residencia',
+        filled: true,
+        fillColor: Colors.white,
+        errorStyle: TextStyle(color: Colors.yellow),
+      ),
+      isExpanded: true,
+      // value: dropdownValue,
+      icon: const Icon(Icons.arrow_downward),
+      onChanged: (map) {
+        // This is called when the user selects an item.
+        //fn_query_estado(map);
+        print(map);
+        setState(() {
+          // dropdownValue = 'value';
+        });
+      },
+      items: listEstados.map((map) {
         return DropdownMenuItem(
           child: Text(
             map['nombre'],
@@ -974,9 +1122,10 @@ class _DropdownDominanciaState extends State<DropdownDominancia> {
       isExpanded: true,
       // value: dropdownValue,
       icon: const Icon(Icons.arrow_downward),
-      onChanged: (Map) {
+      onChanged: (map) {
         // This is called when the user selects an item.
         setState(() {
+          print(map);
           // dropdownValue = 'value';
         });
       },
@@ -1252,11 +1401,10 @@ class _DropdownOperadoraReferenciaAState
       isExpanded: true,
       // value: dropdownValue,
       icon: const Icon(Icons.arrow_downward),
-      onChanged: (Map) {
+      onChanged: (map) {
         // This is called when the user selects an item.
-        setState(() {
-          // dropdownValue = 'value';
-        });
+
+        setState(() {});
       },
       items: listTelefonoReferenciaAOper.map((map) {
         return DropdownMenuItem(
@@ -1315,6 +1463,59 @@ class _DropdownOperadoraReferenciaBState
         });
       },
       items: listTelefonoReferenciaBOper.map((map) {
+        return DropdownMenuItem(
+          child: Text(
+            map['nombre'],
+          ),
+          value: map['value'],
+        );
+      }).toList(),
+    );
+  }
+}
+
+// Pais de Residencia
+class DropdownResidencia extends StatefulWidget {
+  const DropdownResidencia({super.key});
+
+  @override
+  State<DropdownResidencia> createState() => _DropdownResidenciaState();
+}
+
+class _DropdownResidenciaState extends State<DropdownResidencia> {
+  // String dropdownValue = [{999,'jose'}];
+
+  @override
+  void initState() {
+    _getLista();
+    super.initState();
+  }
+
+  _getLista() async {
+    await fn_query_pais();
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButtonFormField(
+      decoration: InputDecoration(
+        prefixIcon: Icon(Icons.map),
+        hintText: 'Pais de Residencia',
+        filled: true,
+        fillColor: Colors.white,
+        errorStyle: TextStyle(color: Colors.yellow),
+      ),
+      isExpanded: true,
+      // value: dropdownValue,
+      icon: const Icon(Icons.arrow_downward),
+      onChanged: (Map) {
+        // This is called when the user selects an item.
+        setState(() {
+          // dropdownValue = 'value';
+        });
+      },
+      items: listPaisResidencia.map((map) {
         return DropdownMenuItem(
           child: Text(
             map['nombre'],
