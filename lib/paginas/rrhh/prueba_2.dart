@@ -76,12 +76,27 @@ List<User> users = [];
 
 class Prueba2 extends StatefulWidget {
   const Prueba2({super.key});
-/*
+
+  @override
+  State<Prueba2> createState() => _Prueba2State();
+}
+
+var var_juan = new User();
+
+llenar_tabla(int nombre, String Apellido) {
+  var_juan.addUsers(nombre, Apellido);
+}
+
+class _Prueba2State extends State<Prueba2> {
+  final title = 'Long List';
+  TextEditingController editingController = TextEditingController();
+  bool sort = true;
+
   void filterSearchResults(String query) {
-    List<String> dummySearchList = List<String>();
+    List<String> dummySearchList = [];
     dummySearchList.addAll(duplicateItems);
     if (query.isNotEmpty) {
-      List<String> dummyListData = List<String>();
+      List<String> dummyListData = [];
       dummySearchList.forEach((item) {
         if (item.contains(query)) {
           dummyListData.add(item);
@@ -99,21 +114,6 @@ class Prueba2 extends StatefulWidget {
       });
     }
   }
-*/
-  @override
-  State<Prueba2> createState() => _Prueba2State();
-}
-
-var var_juan = new User();
-
-llenar_tabla(int nombre, String Apellido) {
-  var_juan.addUsers(nombre, Apellido);
-}
-
-class _Prueba2State extends State<Prueba2> {
-  final title = 'Long List';
-  TextEditingController editingController = TextEditingController();
-  bool sort = true;
 
   void initState() {
     items.addAll(duplicateItems);
