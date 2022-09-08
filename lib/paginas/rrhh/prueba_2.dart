@@ -29,17 +29,18 @@ Future fn_query() async {
 
   // Query the database using a parameterized query
   results = await conn.query(
-      // 'select rrhh_empleado_nombre_a, rrhh_empleado_nombre_b from rrhh_empleado where rrhh_empleado_id = ?', [result.insertId]);
-      'select id_prueba, prueba from prueba');
+      'select rrhh_empleado_id, rrhh_empleado_nombre_a, rrhh_empleado_nombre_b, rrhh_empleado_apellido_a, rrhh_empleado_apellido_b, rrhh_empleado_identificacion,  rrhh_empleado_pais_nacimiento,  rrhh_empleado_nacionalidad from rrhh_empleado ');
+  //'select id_prueba, prueba from prueba');
 
   users.clear();
   for (var row in results) {
-    print('id_prueba: ${row[0]}, prueba: ${row[1]} ');
-    debugPrint(results.toString());
-    llenar_tabla(row[0], row[1]);
+    //print('id_prueba: ${row[0]}, prueba: ${row[1]} ');
+    //debugPrint(results.toString());
+    llenar_tabla(
+        row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]);
 
     //users.add();
-    //juan.lastName = row[2];
+    //juan.primer_nombre = row[2];
     // users.add(juan);
   }
 
@@ -51,19 +52,50 @@ Future fn_query() async {
 }
 
 class User {
-  int firstName;
-  String lastName;
+  int id_empleado;
+  String primer_nombre;
+  String segundo_nombre;
+  String primer_apellido;
+  String segundo_apellido;
+  String identificacion;
+  int pais_nacimiento;
+  int pais_nacionalidad;
+  //DateTime fecha_nacimiento;
 
-  User({this.firstName = 0, this.lastName = ''});
+  User({
+    this.id_empleado = 0,
+    this.primer_nombre = '',
+    this.segundo_nombre = '',
+    this.primer_apellido = '',
+    this.segundo_apellido = '',
+    this.identificacion = '',
+    this.pais_nacimiento = 0,
+    this.pais_nacionalidad = 0,
+    //this.fecha_nacimiento = DateTime.toLocal(),
+  });
 
   static List<User> getUsers() {
     return users;
   }
 
-  addUsers(int firstName, String lastName) {
+  addUsers(
+      int id_empleado,
+      String primer_nombre,
+      String segundo_nombre,
+      String primer_apellido,
+      String segundo_apellido,
+      String identificacion,
+      int pais_nacimiento,
+      int pais_nacionalidad) {
     var user = new User();
-    user.firstName = firstName;
-    user.lastName = lastName;
+    //user.id_empleado = id_empleado;
+    user.primer_nombre = primer_nombre;
+    user.segundo_nombre = segundo_nombre;
+    user.primer_apellido = primer_apellido;
+    user.segundo_apellido = segundo_apellido;
+    user.identificacion = identificacion;
+    user.pais_nacimiento = pais_nacimiento;
+    user.pais_nacionalidad = pais_nacionalidad;
     users.add(user);
   }
 }
@@ -80,8 +112,17 @@ class Prueba2 extends StatefulWidget {
 
 var var_juan = new User();
 
-llenar_tabla(int nombre, String Apellido) {
-  var_juan.addUsers(nombre, Apellido);
+llenar_tabla(
+    int id_usuario,
+    String nombre_a,
+    String nombre_b,
+    String apellido_a,
+    String apellido_b,
+    String identificacion,
+    int pais_nacimiento,
+    int pais_nacionalidad) {
+  var_juan.addUsers(id_usuario, nombre_a, nombre_b, apellido_a, apellido_b,
+      identificacion, pais_nacimiento, pais_nacionalidad);
 }
 
 class _Prueba2State extends State<Prueba2> {

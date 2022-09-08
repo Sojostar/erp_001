@@ -39,12 +39,6 @@ class _PruebaCrearState extends State<PruebaCrear> {
     super.dispose();
   }
 
-/*
-final FilePickerResult? result = await FilePicker.platform.pickFiles( 
-  type: FileType.custom,
-  allowedExtensions: ['jpg', 'pdf', 'doc'],) ;
-*/
-
   static final String uploadEndPoint =
       'http://localhost/flutter_test/upload_image.php';
   Future<XFile>? file;

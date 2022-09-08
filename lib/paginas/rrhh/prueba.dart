@@ -29,14 +29,18 @@ Future fn_query() async {
 
   // Query the database using a parameterized query
   results = await conn.query(
-      // 'select rrhh_empleado_nombre_a, rrhh_empleado_nombre_b from rrhh_empleado where rrhh_empleado_id = ?', [result.insertId]);
-      'select id_prueba, prueba from prueba');
+      'select rrhh_empleado_id, rrhh_empleado_nombre_a, rrhh_empleado_nombre_b, rrhh_empleado_apellido_a, rrhh_empleado_apellido_b, rrhh_empleado_identificacion,  rrhh_empleado_pais_nacimiento,  rrhh_empleado_nacionalidad from rrhh_empleado ');
+  //'select id_prueba, prueba from prueba');
 
   users.clear();
+  dummyListData.clear();
   for (var row in results) {
-    print('id_prueba: ${row[0]}, prueba: ${row[1]} ');
-    debugPrint(results.toString());
-    llenar_tabla(row[0], row[1]);
+    // print('id_prueba: ${row[0]}, prueba: ${row[1]} ');
+    //debugPrint(results.toString());
+    llenar_tabla(
+        row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]);
+    llenar_tablo(
+        row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]);
 
     //users.add();
     //juan.lastName = row[2];
@@ -51,19 +55,50 @@ Future fn_query() async {
 }
 
 class User {
-  int firstName;
-  String lastName;
+  int id_empleado;
+  String primer_nombre;
+  String segundo_nombre;
+  String primer_apellido;
+  String segundo_apellido;
+  String identificacion;
+  int pais_nacimiento;
+  int pais_nacionalidad;
+  //DateTime fecha_nacimiento;
 
-  User({this.firstName = 0, this.lastName = ''});
+  User({
+    this.id_empleado = 0,
+    this.primer_nombre = '',
+    this.segundo_nombre = '',
+    this.primer_apellido = '',
+    this.segundo_apellido = '',
+    this.identificacion = '',
+    this.pais_nacimiento = 0,
+    this.pais_nacionalidad = 0,
+    //this.fecha_nacimiento = DateTime.toLocal(),
+  });
 
   static List<User> getUsers() {
     return users;
   }
 
-  addUsers(int firstName, String lastName) {
+  addUsers(
+      int id_empleado,
+      String primer_nombre,
+      String segundo_nombre,
+      String primer_apellido,
+      String segundo_apellido,
+      String identificacion,
+      int pais_nacimiento,
+      int pais_nacionalidad) {
     var user = new User();
-    user.firstName = firstName;
-    user.lastName = lastName;
+    user.id_empleado = id_empleado;
+    user.primer_nombre = primer_nombre;
+    user.segundo_nombre = segundo_nombre;
+    user.primer_apellido = primer_apellido;
+    user.segundo_apellido = segundo_apellido;
+    user.identificacion = identificacion;
+    user.pais_nacimiento = pais_nacimiento;
+    user.pais_nacionalidad = pais_nacionalidad;
     users.add(user);
   }
 }
@@ -79,20 +114,44 @@ class Prueba extends StatefulWidget {
 }
 
 var var_juan = new User();
+var var_juan_2 = new User();
 
-llenar_tabla(int nombre, String Apellido) {
-  var_juan.addUsers(nombre, Apellido);
+llenar_tabla(
+    int id_usuario,
+    String nombre_a,
+    String nombre_b,
+    String apellido_a,
+    String apellido_b,
+    String identificacion,
+    int pais_nacimiento,
+    int pais_nacionalidad) {
+  var_juan.addUsers(id_usuario, nombre_a, nombre_b, apellido_a, apellido_b,
+      identificacion, pais_nacimiento, pais_nacionalidad);
+}
+
+llenar_tablo(
+    int id_usuario,
+    String nombre_a,
+    String nombre_b,
+    String apellido_a,
+    String apellido_b,
+    String identificacion,
+    int pais_nacimiento,
+    int pais_nacionalidad) {
+  var_juan_2.addUsers(id_usuario, nombre_a, nombre_b, apellido_a, apellido_b,
+      identificacion, pais_nacimiento, pais_nacionalidad);
 }
 
 class _PruebaState extends State<Prueba> {
   List<User> users = User.getUsers();
-  final duplicateItems = List<String>.generate(10000, (i) => "Item $i");
+  List<User> duplicateItems = User.getUsers();
   bool sort = true;
   TextEditingController editingController = TextEditingController();
 
   @override
   void initState() {
-    users = User.getUsers();
+    // users = User.getUsers();
+    // dummyListData.clear;
     //   fn_query();
     //   setState(() {
     //     print("despues");
@@ -107,6 +166,40 @@ class _PruebaState extends State<Prueba> {
     setState(() {
       print("despues");
     });
+  }
+
+  onSearchTextChanged(String text) async {
+    users.clear();
+
+    if (text.isEmpty) {
+      setState(() {});
+      return;
+    }
+
+    print(dummyListData.length);
+    dummyListData.forEach((var_juan_2) {
+      //print(var_juan_2.lastName);
+      //print('3');
+      if (var_juan_2.primer_nombre.contains(text) ||
+          var_juan_2.segundo_nombre.contains(text) ||
+          var_juan_2.primer_apellido.contains(text) ||
+          var_juan_2.segundo_apellido.contains(text) ||
+          var_juan_2.identificacion.contains(text)) {
+        //var_juan_2.addUsers(var_juan_2.firstName, var_juan_2.lastName);
+        llenar_tabla(
+            var_juan_2.id_empleado,
+            var_juan_2.primer_nombre,
+            var_juan_2.segundo_nombre,
+            var_juan_2.primer_apellido,
+            var_juan_2.segundo_apellido,
+            var_juan_2.identificacion,
+            var_juan_2.pais_nacimiento,
+            var_juan_2.pais_nacionalidad);
+      }
+      //
+    });
+
+    setState(() {});
   }
 
   @override
@@ -128,7 +221,10 @@ class _PruebaState extends State<Prueba> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
-                onChanged: (value) {},
+                onChanged: (value) {
+                  onSearchTextChanged(value);
+                  print(value);
+                },
                 controller: editingController,
                 decoration: InputDecoration(
                     labelText: "Busqueda",
@@ -146,7 +242,7 @@ class _PruebaState extends State<Prueba> {
                   return Card(
                     child: InkWell(
                       onTap: () {
-                        print(users[index].lastName);
+                        print(users[index].id_empleado);
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -158,7 +254,7 @@ class _PruebaState extends State<Prueba> {
                                   backgroundImage:
                                       AssetImage('assets/images/avatar_3.png'),
                                 ),
-                                title: Text(users[index].lastName),
+                                title: Text(users[index].primer_nombre),
                                 subtitle: Text('93 million miles away'),
                               ),
                             ),
