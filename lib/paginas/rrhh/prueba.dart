@@ -69,6 +69,7 @@ class User {
 }
 
 List<User> users = [];
+List<User> dummyListData = [];
 
 class Prueba extends StatefulWidget {
   const Prueba({super.key});
@@ -85,7 +86,9 @@ llenar_tabla(int nombre, String Apellido) {
 
 class _PruebaState extends State<Prueba> {
   List<User> users = User.getUsers();
+  final duplicateItems = List<String>.generate(10000, (i) => "Item $i");
   bool sort = true;
+  TextEditingController editingController = TextEditingController();
 
   @override
   void initState() {
@@ -95,6 +98,7 @@ class _PruebaState extends State<Prueba> {
     //     print("despues");
     //   });
     getLista();
+    //users.addAll(duplicateItems);
     super.initState();
   }
 
@@ -105,6 +109,7 @@ class _PruebaState extends State<Prueba> {
     });
   }
 
+  @override
   Widget build(BuildContext context) {
     return new Scaffold(
       floatingActionButton: FloatingActionButton.large(
@@ -117,47 +122,55 @@ class _PruebaState extends State<Prueba> {
         backgroundColor: Colors.deepOrange,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
-      body: new Container(
-        width: MediaQuery.of(context).size.width,
-        child: new DataTable(
-          sortColumnIndex: 0,
-          sortAscending: true,
-          columns: const <DataColumn>[
-            DataColumn(
-              label: Expanded(
-                child: Text(
-                  'Foto',
-                ),
+      body: Container(
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                onChanged: (value) {},
+                controller: editingController,
+                decoration: InputDecoration(
+                    labelText: "Busqueda",
+                    hintText: "Busqueda",
+                    prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(25.0)))),
               ),
             ),
-            DataColumn(
-              label: Expanded(
-                child: Text(
-                  'id',
-                  style: TextStyle(fontStyle: FontStyle.italic),
-                ),
-              ),
-            ),
-            DataColumn(
-              label: Expanded(
-                child: Text(
-                  'prueba',
-                  style: TextStyle(fontStyle: FontStyle.italic),
-                ),
+            Expanded(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: users.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    child: InkWell(
+                      onTap: () {
+                        print(users[index].lastName);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundImage:
+                                      AssetImage('assets/images/avatar_3.png'),
+                                ),
+                                title: Text(users[index].lastName),
+                                subtitle: Text('93 million miles away'),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
           ],
-          rows: users
-              .map(
-                (user) => DataRow(
-                  cells: <DataCell>[
-                    DataCell(FlutterLogo()),
-                    DataCell(Text((user.firstName).toString())),
-                    DataCell(Text(user.lastName)),
-                  ],
-                ),
-              )
-              .toList(),
         ),
       ),
     );

@@ -5,10 +5,6 @@ import 'dart:async';
 import 'package:mysql1/mysql1.dart';
 import 'package:erp/paginas/rrhh/PruebaCrear.dart';
 
-final items = List<String>.generate(10000, (i) => "Item $i");
-
-final duplicateItems = List<String>.generate(10000, (i) => "Item $i");
-
 var results;
 
 Future fn_query() async {
@@ -73,6 +69,7 @@ class User {
 }
 
 List<User> users = [];
+List<User> duplicateusers = [];
 
 class Prueba2 extends StatefulWidget {
   const Prueba2({super.key});
@@ -91,10 +88,10 @@ class _Prueba2State extends State<Prueba2> {
   final title = 'Long List';
   TextEditingController editingController = TextEditingController();
   bool sort = true;
-
+/*
   void filterSearchResults(String query) {
     List<String> dummySearchList = [];
-    dummySearchList.addAll(duplicateItems);
+    dummySearchList.addAll(duplicateusers);
     if (query.isNotEmpty) {
       List<String> dummyListData = [];
       dummySearchList.forEach((item) {
@@ -103,20 +100,24 @@ class _Prueba2State extends State<Prueba2> {
         }
       });
       setState(() {
-        items.clear();
-        items.addAll(dummyListData);
+        users.clear();
+        users.addAll(dummyListData);
       });
       return;
     } else {
       setState(() {
-        items.clear();
-        items.addAll(duplicateItems);
+        users.clear();
+        users.addAll(duplicateusers);
       });
     }
   }
+*/
 
   void initState() {
-    items.addAll(duplicateItems);
+    users.addAll(duplicateusers);
+    setState(() {
+      fn_query();
+    });
     super.initState();
   }
 
@@ -142,10 +143,33 @@ class _Prueba2State extends State<Prueba2> {
             Expanded(
               child: ListView.builder(
                 shrinkWrap: true,
-                itemCount: items.length,
+                itemCount: users.length,
                 itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text('${items[index]}'),
+                  return Card(
+                    child: InkWell(
+                      onTap: () {
+                        print('Impreso');
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundImage:
+                                      AssetImage('assets/images/avatar_3.png'),
+                                ),
+                                title: Text('Sun'),
+                                subtitle: Text('93 million miles away'),
+                              ),
+                            ),
+                            Text('data'),
+                            Text('data'),
+                          ],
+                        ),
+                      ),
+                    ),
                   );
                 },
               ),
