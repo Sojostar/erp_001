@@ -38,6 +38,9 @@ dependencies:
   cupertino_icons: ^1.0.2
   mysql1: ^0.20.0
   snippet_coder_utils: ^1.0.12
+  image_picker: ^0.8.5+3
+  file_picker: ^5.0.1
+  syncfusion_flutter_datepicker: ^20.2.48
 
 dev_dependencies:
   flutter_test:
