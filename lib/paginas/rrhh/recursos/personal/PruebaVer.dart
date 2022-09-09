@@ -19,15 +19,15 @@ Future fn_query_pais(texto) async {
   await conn.close();
 }
 
-class PruebaCrear extends StatefulWidget {
-  const PruebaCrear({super.key});
+class PruebaVer extends StatefulWidget {
+  const PruebaVer({super.key});
 
   final String title = "Upload Image Demo";
   @override
-  State<PruebaCrear> createState() => _PruebaCrearState();
+  State<PruebaVer> createState() => _PruebaVerState();
 }
 
-class _PruebaCrearState extends State<PruebaCrear> {
+class _PruebaVerState extends State<PruebaVer> {
   final _formKey = GlobalKey<FormState>();
   final textoController = TextEditingController();
   final ImagePicker _picker = ImagePicker();

@@ -81,6 +81,10 @@ class User {
     return users;
   }
 
+  static List<User> getUsera() {
+    return dummyListData;
+  }
+
   addUsers(
       int id_empleado,
       String primer_nombre,
@@ -100,6 +104,27 @@ class User {
     user.pais_nacimiento = pais_nacimiento;
     user.pais_nacionalidad = pais_nacionalidad;
     users.add(user);
+  }
+
+  addUsera(
+      int id_empleado,
+      String primer_nombre,
+      String segundo_nombre,
+      String primer_apellido,
+      String segundo_apellido,
+      String identificacion,
+      int pais_nacimiento,
+      int pais_nacionalidad) {
+    var usera = new User();
+    usera.id_empleado = id_empleado;
+    usera.primer_nombre = primer_nombre;
+    usera.segundo_nombre = segundo_nombre;
+    usera.primer_apellido = primer_apellido;
+    usera.segundo_apellido = segundo_apellido;
+    usera.identificacion = identificacion;
+    usera.pais_nacimiento = pais_nacimiento;
+    usera.pais_nacionalidad = pais_nacionalidad;
+    dummyListData.add(usera);
   }
 }
 
@@ -138,7 +163,7 @@ llenar_tablo(
     String identificacion,
     int pais_nacimiento,
     int pais_nacionalidad) {
-  var_juan_2.addUsers(id_usuario, nombre_a, nombre_b, apellido_a, apellido_b,
+  var_juan_2.addUsera(id_usuario, nombre_a, nombre_b, apellido_a, apellido_b,
       identificacion, pais_nacimiento, pais_nacionalidad);
 }
 
@@ -152,10 +177,6 @@ class _PruebaState extends State<Prueba> {
   void initState() {
     // users = User.getUsers();
     // dummyListData.clear;
-    //   fn_query();
-    //   setState(() {
-    //     print("despues");
-    //   });
     getLista();
     //users.addAll(duplicateItems);
     super.initState();
@@ -208,7 +229,9 @@ class _PruebaState extends State<Prueba> {
       floatingActionButton: FloatingActionButton.large(
         onPressed: () {
           setState(() {
-            Navigator.of(context).pushNamed("/rrhh/PruebaCrear");
+            Navigator.of(
+              context,
+            ).pushNamed("/rrhh/PruebaCrear");
           });
         },
         child: const Icon(Icons.add),
@@ -243,6 +266,10 @@ class _PruebaState extends State<Prueba> {
                     child: InkWell(
                       onTap: () {
                         print(users[index].id_empleado);
+                        Navigator.of(
+                          context,
+                        ).pushNamed("/rrhh/PruebaVer",
+                            arguments: {'nombre': 'juan'});
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -254,8 +281,15 @@ class _PruebaState extends State<Prueba> {
                                   backgroundImage:
                                       AssetImage('assets/images/avatar_3.png'),
                                 ),
-                                title: Text(users[index].primer_nombre),
-                                subtitle: Text('93 million miles away'),
+                                title: Text(users[index].primer_nombre +
+                                    ' ' +
+                                    users[index].segundo_nombre +
+                                    ' ' +
+                                    users[index].primer_apellido +
+                                    ' ' +
+                                    users[index].segundo_apellido),
+                                subtitle: Text(
+                                    'C.I.: ' + users[index].identificacion),
                               ),
                             ),
                           ],
